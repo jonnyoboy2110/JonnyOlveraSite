@@ -1,32 +1,32 @@
 # List of completed challenges
-itertools.combinations()
-itertools.product()
-Integers Come In All Sizes
-Triangle Quest
-Text Wrap
-The Minion Game
-Text Alignment
-String Validators
-String Split and Join
-Lists
-Re.split()
-Validating phone numbers
-Capitalize!
-Find a string
-Mutations
-sWAP cASE
-What's Your Name?
-Tuples
-Merge the Tools!
-Finding the percentage
-Nested Lists
-Find the Runner-Up Score!
-Write a function
-List Comprehensions
-Print Function
-Loops
-Python: Division
-Arithmetic Operators
-Python If-Else
-Say "Hello, World!" With Python
-Solve Me First
+itertools.combinations()<br>
+itertools.product()<br>
+Integers Come In All Sizes<br>
+Triangle Quest<br>
+Text Wrap<br>
+The Minion Game<br>
+Text Alignment<br>
+String Validators<br>
+String Split and Join<br>
+Lists<br>
+Re.split()<br>
+Validating phone numbers<br>
+Capitalize!<br>
+Find a string<br>
+Mutations<br>
+sWAP cASE<br>
+What's Your Name?<br>
+Tuples<br>
+Merge the Tools!<br>
+Finding the percentage<br>
+Nested Lists<br>
+Find the Runner-Up Score!<br>
+Write a function<br>
+List Comprehensions<br>
+Print Function<br>
+Loops<br>
+Python: Division<br>
+Arithmetic Operators<br>
+Python If-Else<br>
+Say "Hello, World!" With Python<br>
+Solve Me First<br>
