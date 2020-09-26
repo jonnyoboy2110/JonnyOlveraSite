@@ -1,24 +1,22 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
-<!--
-<ul>
-  <div class="grid-container">
-    <div class="grid-x grid-padding-x">
-      {% for sugg in suggestions %}
-      <div class="large-12 medium-12 cell">
-        <li>{{ sugg }}</li>
-        </div>
-      {% endfor %}
+<div class="grid-container">
+  <div class="grid-x grid-padding-x">
+    <div class="large-12 cell">
+      <h1 class="text-center">{{ThisIsALargeWordThatYouWantedMeToPrintOutSoHereItIs}}</h1>
     </div>
   </div>
-</ul>
-<form action="/" method="post">
-{% csrf_token %}
-{{form}}
+</div>
 
-<input type="submit" value="Add Suggestion" class="button">
-</form> -->
-{{body}}
+<canvas id="canvas" width="1000" height="600" class="text-center"></canvas>
 
+<button type="button" class="button" onclick="BubbleSort_OneCycle()">BubbleSort</button>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="{% static "js/foundation.js" %}"></script>
+<script src="{% static "js/assignment3js.js" %}"></script>
 {% endblock %}
