@@ -1,24 +1,24 @@
 {% extends "base.html" %}
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
-<!--
-<ul>
-  <div class="grid-container">
-    <div class="grid-x grid-padding-x">
+{% load static %}
+<div class="row">
+  <div class="large-2 medium-2 small-2 columns">
+    <ul>
       {% for sugg in suggestions %}
-      <div class="large-12 medium-12 cell">
         <li>{{ sugg }}</li>
-        </div>
       {% endfor %}
+    </ul>
     </div>
-  </div>
-</ul>
+    <div class="large-2 medium-2 small-2 columns">
+      <img src="{% static "spongebobMeme.jpg" %}" alt="sPonGeBob">
+    </div>
+</div>
+
+
 <form action="/" method="post">
 {% csrf_token %}
-{{form}}
-
-<input type="submit" value="Add Suggestion" class="button">
-</form> -->
-{{body}}
-
+{{ form }}
+<input type="submit" class="button" value="Make Spongebob Text"/>
+</form>
 {% endblock %}

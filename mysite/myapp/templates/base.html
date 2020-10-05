@@ -1,4 +1,4 @@
-{%load static%}
+{% load static %}
 <!DOCTYPE html>
 <html class="no-js" lang="en">
   <head>
@@ -10,10 +10,27 @@
     {% block css %}{% endblock %}
   </head>
   <body>
-      <!-- nav bar 2 -->
-      {% block content %}{% endblock %}
-      <script src="{% static "js/vendor.js"%}"></script>
-      <script src= "{% static "js/foundation.js" %}"></script>
-      {% block scripts %}{% endblock %}
+    <div class="top-bar">
+        <div class="top-bar-left">
+          <ul class="dropdown menu" data-dropdown-menu>
+            <li class="menu-text">Spongebob Meme Text</li>
+          </ul>
+        </div>
+        <div class="top-bar-right">
+          <ul class="menu">
+              <li>
+                {% if user.is_authenticated %}
+                    Welcome {{ user.username }}
+                {% else %}
+                    wElCoMe GuEsT
+                {% endif %}
+            </li>
+          </ul>
+        </div>
+      </div>
+    {% block content %}{% endblock %}
+    <script src="{% static "js/vendor.js" %}"></script>
+    <script src="{% static "js/foundation.js" %}"></script>
+    {% block scripts %}{% endblock %}
   </body>
 </html>
