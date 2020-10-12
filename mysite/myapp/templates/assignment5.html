@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="grid-container">
+    <div class="grid-x grid-padding-x">
+        <div class="large-10 medium-10 small-12 large-offset-1 medium-offset-1 cell">
+                <div class="card-info primary" v-for="sugg in suggestions">
+                  <div class="card-info-content" id = "CanvasCard">
+                    <canvas id="canvas" width="600" height="500"></canvas>
+                  </div>
+                </div>
+          </div>
+      </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+
+<script src="{% static "js/pong.js" %}"></script>
+{% endblock %}

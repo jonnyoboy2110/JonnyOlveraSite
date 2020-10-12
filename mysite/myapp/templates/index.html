@@ -1,24 +1,53 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
-<!--
-<ul>
-  <div class="grid-container">
-    <div class="grid-x grid-padding-x">
-      {% for sugg in suggestions %}
-      <div class="large-12 medium-12 cell">
-        <li>{{ sugg }}</li>
-        </div>
-      {% endfor %}
-    </div>
-  </div>
-</ul>
-<form action="/" method="post">
-{% csrf_token %}
-{{form}}
 
-<input type="submit" value="Add Suggestion" class="button">
-</form> -->
-{{body}}
+
+
+<div class="grid-container">
+    <div class="grid-x grid-padding-x">
+        <div class="large-10 medium-10 small-12 large-offset-1 medium-offset-1 cell">
+            <div id="app-4">
+                <div class="card-info primary" v-for="sugg in suggestions">
+                    <div class="card-info-content">
+                        {% verbatim %}
+                        <h3 class="lead">{{ sugg.suggestion }}</h3>
+                        <img :src="sugg.image" :alt="sugg.image_description"/>
+                        authored by {{ sugg.author }}
+                        </br>
+                        created on {{ sugg.date }}
+                        <div class="grid-x">
+                            <div class="large-11 medium-11 small-12 large-offset-1 medium-offset-1 cell">
+                                <div class="card-info primary" v-for="comm in sugg.comments">
+                                    <div class="card-info-content">
+                                        {{ comm.comment }} - {{ comm.author }} - {{ comm.date}}
+                                    </div>
+                                </div>
+                                {% endverbatim %}
+                                {% if user.is_authenticated %}
+                                <a :href="'/comment/'+ sugg.id +'/'" class="button">comment</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+                          
+                    
+    
+      
+      
+      
 
 {% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="{% static "js/myvue.js" %}"></script>
+{% endblock %}
+

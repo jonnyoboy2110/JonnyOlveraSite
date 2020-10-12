@@ -1,8 +1,8 @@
 from django.urls import path
+from django.contrib.auth import views as auth_views
 
 from . import views #convention
 
 urlpatterns = [
-    path('', views.index),
-    path('<int:page>/', views.page),
+    path('', views.assignment5),
 ]

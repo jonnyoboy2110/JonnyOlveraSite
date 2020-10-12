@@ -1,4 +1,4 @@
-{%load static%}
+{% load static %}
 <!DOCTYPE html>
 <html class="no-js" lang="en">
   <head>
@@ -7,13 +7,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static "css/foundation.css" %}">
+    <link rel="stylesheet" href="{% static "css/app.css" %}">
     {% block css %}{% endblock %}
   </head>
   <body>
-      <!-- nav bar 2 -->
-      {% block content %}{% endblock %}
-      <script src="{% static "js/vendor.js"%}"></script>
-      <script src= "{% static "js/foundation.js" %}"></script>
-      {% block scripts %}{% endblock %}
+    <div class="top-bar">
+        <div class="top-bar-left">
+          <ul class="dropdown menu" data-dropdown-menu>
+            <li class="menu-text">Brick Site</li>
+
+          </ul>
+        </div>
+        <div class="top-bar-right">
+          <ul class="menu">
+
+              <li id = "lives">
+
+                    Lives = 3
+            </li>
+          </ul>
+        </div>
+      </div>
+    {% block content %}{% endblock %}
+    <script src="{% static "js/vendor.js" %}"></script>
+    <script src="{% static "js/foundation.js" %}"></script>
+    {% block scripts %}{% endblock %}
   </body>
 </html>
