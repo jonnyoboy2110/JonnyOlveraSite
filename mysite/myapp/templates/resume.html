@@ -15,9 +15,10 @@
             </div>
         </div>
         <div class="large-8 medium-8 cell">
-            <div class="card-info primary" id ="canvasBin">
-                <div class="card-info-content" id = "canvasCell">
-                    <p>HELLO PAGE</p>
+            <div class="card-info primary" >
+                <div class="card-info-content" id = "resumeCell" >
+                    <iframe id = "resumeFrame" src="{% static "files/resumeJonnyOlveraV4.pdf" %}" width = "100%">
+                    </iframe>
                 </div>
             </div>
         </div>
@@ -30,7 +31,7 @@
 
 {% endblock %}
 {% block scripts %}
-
+<script src="{% static "js/resume.js" %}"></script>
 
 {% endblock %}
 

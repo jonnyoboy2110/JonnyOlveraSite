@@ -25,7 +25,7 @@ SECRET_KEY = '2m2+k#*5%c-!^j6!a@-e9ksvxwp)jw=dr^42_&6qn8v@nq_r^e'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["35.208.157.126", "www.jolvera.me","jolvera.me" ]
 
 LOGIN_REDIRECT_URL="/"
 LOGIN_URL="/login/"
@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'myapp',
+    'channels',
+    'chat',
 ]
 
 MIDDLEWARE = [
@@ -71,8 +73,15 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
-
-
+ASGI_APPLICATION = "mysite.asgi.application"
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('35.208.157.126', 6379)],
+        },
+    },
+}
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 

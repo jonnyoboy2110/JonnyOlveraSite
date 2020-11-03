@@ -4,5 +4,6 @@ from django.contrib.auth import views as auth_views
 from . import views #convention
 
 urlpatterns = [
-    path('', views.assignment5),
+    path('', views.index),
+    path('resume/', views.resume),
 ]

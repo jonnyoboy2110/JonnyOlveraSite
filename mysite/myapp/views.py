@@ -10,8 +10,14 @@ from . import models
 from . import forms
 
 
-def assignment5(request):
+def index(request):
     context = {
-        "title": "Assignment 5 Page",
+        "title": "Jonathan's Page",
     }
-    return render(request, "assignment5.html", context=context)
+    return render(request, "index.html", context=context)
+
+def resume(request):
+    context = {
+        "title": "Jonathan's Resume",
+    }
+    return render(request, "resume.html", context=context)
