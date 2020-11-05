@@ -6,13 +6,23 @@
     <title>Chat Room</title>
 </head>
 <body>
+    <style>
+        div{
+            background-color:red;
+            width:500px;
+            height:10px;
+            border:1px solid #000;
+        }
+    </style>
     <textarea id="chat-log" cols="100" rows="20"></textarea><br>
     <input id="chat-message-input" type="text" size="100"><br>
     <input id="chat-message-submit" type="button" value="Send">
+
+    <div id = "ProgressBar" ></div>
     {{ room_name|json_script:"room-name" }}
     <script>
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
-
+        var ProgressBarWidth = 10;
         const chatSocket = new WebSocket(
             'ws://'
             + window.location.host
@@ -24,6 +34,9 @@
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
             document.querySelector('#chat-log').value += (data.message + '\n');
+
+            ProgressBarWidth +=10;
+            document.getElementById("ProgressBar").style.width = ProgressBarWidth + "px";
         };
 
         chatSocket.onclose = function(e) {
