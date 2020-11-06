@@ -17,6 +17,9 @@
             <li class="menu-text">
               <a href="/">Jonathan Olvera</a>
             </li>
+            <li class="menu-text"> 
+              <a href="/resume/">Resume</a>
+            </li>
             <li class="menu-text">
               <a href="/chat/">Chat</a>
             </li>
@@ -24,7 +27,22 @@
         </div>
         <div class="top-bar-right">
           <ul class="menu">
-              <li class="menu-text" > <a href = "/resume/" >Resume</a>  </li>
+            <li>
+              {% if user.is_authenticated %}
+                  Welcome {{ user.username }}
+              {% else %}
+                  Welcome Guest
+              {% endif %}
+              <ul class="menu vertical">
+                <li>
+                  {% if user.is_authenticated %}
+                      <a href="/logout/">Logout</a>
+                  {% else %}
+                      <a href="/registration/login/">Login</a>
+                  {% endif %}
+                 </li>
+              <ul>
+            </li>
           </ul>
         </div>
       </div>

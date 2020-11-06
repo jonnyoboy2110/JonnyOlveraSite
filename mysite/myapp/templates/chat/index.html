@@ -1,0 +1,42 @@
+<!-- chat/templates/chat/index.html -->
+{% extends "base.html" %}
+
+{% block title %}{{title}}{% endblock %}
+{% block content %}
+What chat room would you like to enter?<br>
+<input id="room-name-input" type="text" size="100" ><br>
+<input class= "button" id="room-name-submit" type="button" value="Enter room">
+<input class= "button" id="room-name-create" type="button" value="Create New Room">
+<a href="/chat/newParagraph/"><p class= "button" id="create-new-paragraph"  >Create New Paragraph</a>
+{% endblock %}
+{% block scripts %}
+<script>
+
+
+    document.querySelector('#room-name-input').focus();
+    document.querySelector('#room-name-input').onkeyup = function(e) {
+        if (e.keyCode === 13) {  // enter, return
+            document.querySelector('#room-name-submit').click();
+        }
+    };
+
+    document.querySelector('#room-name-submit').onclick = function(e) {
+        var roomName = document.querySelector('#room-name-input').value;
+        window.location.pathname = '/chat/room/' + roomName + '/';
+    };
+    // document.querySelector('#create-new-paragraph').onclick = function(e) {
+    //     window.location.pathname = '/chat/' + "newParagraph" + '/';
+    // };
+    document.querySelector('#room-name-create').onclick = function(e) {
+        let letters = "0123456789ABCDEF"; 
+        let roomCode = ''; 
+        for (var i = 0; i < 10; i++){ 
+            roomCode += letters[(Math.floor(Math.random() * 16))]; 
+        }
+        document.querySelector('#room-name-input').value = roomCode;
+
+        
+    };
+</script>
+
+{% endblock %}
