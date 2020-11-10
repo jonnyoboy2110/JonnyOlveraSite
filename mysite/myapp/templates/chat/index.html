@@ -3,19 +3,50 @@
 
 {% block title %}{{title}}{% endblock %}
 {% block content %}
-What chat room would you like to enter?<br>
-<input id="room-name-input" type="text" size="100" ><br>
-<input class= "button" id="room-name-submit" type="button" value="Enter room">
-<input class= "button" id="room-name-create" type="button" value="Create New Room">
-{% if user.is_authenticated %}
-<a href="/chat/newParagraph/"><p class= "button" id="create-new-paragraph"  >Create New Paragraph</a>
-{% endif %}    
+
+
+
+<div class="grid-container">
+
+<h1>WildcatTyper</h1>
+<p>WildcatTyper is a type racer game you can play with friends or bots!</p>
+    <div class="grid-x grid-padding-x">
+        <div class="large-4 medium-4 cell">
+            <div class="card-info primary">
+                <div class="card-info-content">
+                    {% if user.is_authenticated %}
+                        <input id="room-name-input" type="text" size="100" ><br>
+                        <input class= "button" id="room-name-submit" type="button" value="Enter room">
+                        <input class= "button" id="room-name-create" type="button" value="Create New Room">
+                        <a href="/chat/newParagraph/"><p class= "button" id="create-new-paragraph"  >Create New Paragraph</a>
+                    {% else %}
+                        <p>Please login to race!</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="large-8 medium-8 cell">
+            <div class="card-info primary" >
+                <div class="card-info-content" >
+                    
+                
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+                          
+                    
+      
+      
+
 {% endblock %}
 {% block scripts %}
+{% if user.is_authenticated %}
 <script>
 
 
-    document.querySelector('#room-name-input').focus();
+    document.getElementById('room-name-input').focus();
     document.querySelector('#room-name-input').onkeyup = function(e) {
         if (e.keyCode === 13) {  // enter, return
             document.querySelector('#room-name-submit').click();
@@ -36,9 +67,7 @@ What chat room would you like to enter?<br>
             roomCode += letters[(Math.floor(Math.random() * 16))]; 
         }
         document.querySelector('#room-name-input').value = roomCode;
-
-        
     };
 </script>
-
+{% endif %}
 {% endblock %}
