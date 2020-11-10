@@ -21,9 +21,12 @@ services:
   nginx:
    restart: always
    build: ./nginx/
+   volumes:
+      - ./mysite/myapp/static:/static/
    depends_on:
       - web
    ports:
       - 80:80
+      - 443:443
    links:
       - web:web
