@@ -49,9 +49,14 @@ def chat(request):
     })
 
 def room(request, room_name):
+    para_object = models.ParagraphModel.objects.all()
+    text = para_object[0].Paragraph
+    wordList = text.split()
     return render(request, 'chat/room/room.html', context = {
         'title': "Chat Room",
-        'room_name': room_name
+        'room_name': room_name,
+        'paragraph':text,
+        'wordList': wordList
     })
 def newParagraph(request):
     return render(request, 'chat/newParagraph.html', context = {

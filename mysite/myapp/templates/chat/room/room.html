@@ -2,9 +2,15 @@
 {% extends "base.html" %}
 {% block css %}
     <style>
-        #ProgressBar{
+        .oppProgressBar{
             background-color:red;
-            width:10;
+            width:10px;
+            height:10px;
+            border:1px solid #000;
+        }
+        .ownProgressBar{
+            background-color:blueviolet;
+            width:10px;
             height:10px;
             border:1px solid #000;
         }
@@ -12,19 +18,74 @@
 {% endblock %}
 {% block title %}{{title}}{% endblock %}
 {% block content %}
-    <textarea id="chat-log" cols="100" rows="20"></textarea><br>
-    <input id="chat-message-input" type="text" size="100"><br>
-    <input id="chat-message-submit" type="button" value="Send">
-
-    <div id = "ProgressBar" ></div>
+    <br>
+    <div id = "progressContainer" ></div>
+    <br>
+    
+    <div class="grid-container">
+        <div class="grid-x grid-padding-x">
+            <div class="large-12 medium-12 cell">
+                <h1>WildcatTyper</h1>
+                <p id = "infoText">WildcatTyper is a type racer game you can play with friends or bots!</p>
+            </div>
+            <div class="large-4 medium-4 cell">
+                <div class="card-info primary">
+                    <div class="card-info-content">
+                        <p id = "wpm">You will be typing this paragraph</p>
+                    </div>
+                    <div class="card-info-content">
+                        <p id="chat-log" cols="100" rows="20"><strong>{{paragraph}}</strong></p>
+                            
+                    </div>
+                </div>
+            </div>
+            <div class="large-8 medium-8 cell">
+                <div class="card-info primary" >
+                    <div class="card-info-content grid-x grid-padding-x" >
+                        <input id="chat-message-input" type="text" size="100"><br>
+                        
+                    </div>
+                    <div class="card-info-content grid-x grid-padding-x" >
+                        <button class="button" onclick = "StartGame()">Start</button>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="large-8 medium-8 cell">
+                <div class="card-info primary" >
+                    <div class="card-info-content grid-x grid-padding-x" >
+                        <p>Finished players will appear here:</p><br>
+                     <ol id = "finishedList">
+                         
+                     </ol>   
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     {{ room_name|json_script:"room-name" }}
+    {{ wordList|json_script:"word-list" }}
+    {{ paragraph|json_script:"paragraph" }}
+    {{user.username|json_script:"player" }}
 {% endblock %}
 {% block scripts %}
     <script>
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
-        var ProgressBarWidth = 10;
+        var wordList = JSON.parse(document.getElementById('word-list').textContent);
+        var paragraph = JSON.parse(document.getElementById('paragraph').textContent);
+        var username = JSON.parse(document.getElementById('player').textContent);
+        var wordIndex = 0;
+        var totalLength = 0;
+        var oppProgressBarWidth = 10;
+        var ownProgressBarWidth = 10;
+        var userList = [username];
+        var startTime;
+
+        document.getElementById('infoText').innerHTML = document.getElementById('infoText').innerHTML + " Your room code is ".bold() + roomName.bold(); 
+        document.getElementById("chat-message-input").disabled = true;
         const chatSocket = new WebSocket(
-            'ws://'
+            'wss://'
             + window.location.host
             + '/ws/chat/'
             + roomName
@@ -33,30 +94,140 @@
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.message + '\n');
-
-            ProgressBarWidth +=10;
-            document.getElementById("ProgressBar").style.width = ProgressBarWidth + "px";
+            if(data.action === "wordEntered"){
+                if(data.player === username){
+                    // ownProgressBarWidth +=10;
+                    let bar = document.getElementById(data.player + "Bar");
+                    bar.style.width = Number(bar.style.width.substring(0,bar.style.width.length -2)) +10 + "px";
+                    wordIndex+=1;
+                    let nowTime  = new Date()
+                    let timeElapsed = (nowTime.getTime() - startTime.getTime()) / 1000;
+                    let wpm =  (wordIndex * 60)/timeElapsed;
+                    document.querySelector('#wpm').innerHTML = precise(wpm) + "wpm";
+                    document.querySelector('#chat-log').innerHTML = wordList.slice(0,wordIndex).join(" ").bold() +
+                        " " + 
+                        wordList[wordIndex].fontcolor("red") +
+                        " "+
+                        wordList.slice(wordIndex+1).join(" ");
+                    totalLength += wordList[wordIndex].length +1;
+                }
+                else{
+                    let bar = document.getElementById(data.player + "Bar");
+                    bar.style.width = Number(bar.style.width.substring(0,bar.style.width.length -2)) +10 + "px";
+                    //oppProgressBarWidth +=10;
+                    // document.getElementById("oppProgressBar").style.width = oppProgressBarWidth + "px";
+                }
+            }
+            else if(data.action === "playerEntered"){
+                if(data.player === username){
+                    let div = document.createElement("div");
+                    div.className = "ownProgressBar";
+                    div.id = data.player + "Bar";
+                    document.getElementById("progressContainer").appendChild(div);
+                    console.log(data.player);
+                }
+                else{
+                    let div = document.createElement("div");
+                    div.className = "oppProgressBar";
+                    div.id = data.player + "Bar";
+                    document.getElementById("progressContainer").appendChild(div);
+                    for(var i  = 0; i<userList.length;i++){
+                        chatSocket.send(JSON.stringify({
+                        'message': userList[i], 
+                        'player': data.player,
+                        'action': "addUserProgressBar",
+                    }));
+                    }
+                }
+            }
+            else if(data.action === "addUserProgressBar" && username == data.player){
+                let div = document.createElement("div");
+                div.className = "oppProgressBar";
+                div.id = data.message + "Bar";
+                document.getElementById("progressContainer").appendChild(div);
+            }
+            else if(data.action === "playerLeaving"){
+                console.log(data.player + " has left the room");
+            }
+            else if(data.action === "playerFinished"){
+                let liElement = document.createElement("li");
+                liElement.innerHTML = data.message + " wpm" + " (" + data.player + ")";
+                document.getElementById("finishedList").appendChild(liElement);
+            }
+            else if(data.action === "gameStarting"){
+            document.getElementById("chat-message-input").disabled = false;
+            document.querySelector('#chat-message-input').focus();
+            
+            startTime = new Date();
+            document.querySelector('#wpm').innerHTML = 0 + "wpm";
+            document.querySelector('#chat-log').innerHTML = wordList[wordIndex].bold().fontcolor("red") + 
+            paragraph.substring(wordList[wordIndex].length);
+            totalLength += wordList[wordIndex].length + 1;
+            }
         };
 
         chatSocket.onclose = function(e) {
+            chatSocket.send(JSON.stringify({
+                        'message': "GoodBye",
+                        'player': username,
+                        'action': "playerLeaving" 
+                    }));
             console.error('Chat socket closed unexpectedly');
+            
         };
 
         document.querySelector('#chat-message-input').focus();
         document.querySelector('#chat-message-input').onkeyup = function(e) {
-            if (e.keyCode === 13) {  // enter, return
-                document.querySelector('#chat-message-submit').click();
+            const messageInputDom = document.querySelector('#chat-message-input');
+            const message = messageInputDom.value.trim();
+            if (e.keyCode === 13 || e.keyCode === 32) {  // enter, return
+                if(message == wordList[wordIndex]){
+                    if(wordList.length == wordIndex +1){
+                        document.getElementById("chat-message-input").disabled = true;
+                        let nowTime  = new Date()
+                        let timeElapsed = (nowTime.getTime() - startTime.getTime()) / 1000;
+                        let wpm =  precise((wordIndex * 60)/timeElapsed);
+                    chatSocket.send(JSON.stringify({
+                        'message': String(wpm),
+                        'player': username,
+                        'action': "playerFinished" 
+                    }));    
+                    }
+                    else{
+                    chatSocket.send(JSON.stringify({
+                        'message': message,
+                        'player': username,
+                        'action': "wordEntered" 
+                    }));
+                    }
+                    messageInputDom.value = '';    
+                }
+                else{
+                    messageInputDom.value = messageInputDom.value.trim();
+                }
             }
         };
-
-        document.querySelector('#chat-message-submit').onclick = function(e) {
-            const messageInputDom = document.querySelector('#chat-message-input');
-            const message = messageInputDom.value;
+        
+        function StartGame(){
             chatSocket.send(JSON.stringify({
-                'message': message
-            }));
-            messageInputDom.value = '';
-        };
+                        'message': "",
+                        'player': username,
+                        'action': "gameStarting" 
+                    }));
+        }
+        
+        function precise(x) {
+            return Number.parseFloat(x).toPrecision(4);
+        }
+
+        chatSocket.onopen = function(e){
+            chatSocket.send(JSON.stringify({
+                        'message': "addingProgressBar",
+                        'player': username,
+                        'action': "playerEntered" 
+                    }));
+
+        }
+        
     </script>
 {% endblock %}

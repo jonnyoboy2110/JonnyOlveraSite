@@ -7,10 +7,11 @@
 
 
 <div class="grid-container">
-
-<h1>WildcatTyper</h1>
-<p>WildcatTyper is a type racer game you can play with friends or bots!</p>
     <div class="grid-x grid-padding-x">
+        <div class="large-12 medium-12 cell">
+            <h1>WildcatTyper</h1>
+            <p>WildcatTyper is a type racer game you can play with friends or bots!</p>
+        </div>
         <div class="large-4 medium-4 cell">
             <div class="card-info primary">
                 <div class="card-info-content">
@@ -18,7 +19,7 @@
                         <input id="room-name-input" type="text" size="100" ><br>
                         <input class= "button" id="room-name-submit" type="button" value="Enter room">
                         <input class= "button" id="room-name-create" type="button" value="Create New Room">
-                        <a href="/chat/newParagraph/"><p class= "button" id="create-new-paragraph"  >Create New Paragraph</a>
+                        <a href="/chat/newParagraph/"><p class= "button" id="create-new-paragraph" style = "text-decoration: none;">Create New Paragraph</p></a>
                     {% else %}
                         <p>Please login to race!</p>
                     {% endif %}
@@ -27,8 +28,39 @@
         </div>
         <div class="large-8 medium-8 cell">
             <div class="card-info primary" >
-                <div class="card-info-content" >
-                    
+                <div class="card-info-content grid-x grid-padding-x" >
+                    <p>Instructions</p>
+                    <ul>
+                        <li>
+                            First Login to your account
+                            <ul>
+                                <li>
+                                    If you dont already have an account, click in <strong>Login</strong> at the top right of the page to make one
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="cell large-6 medium-6 card-info primary" >
+                        <div class="card-info-content" >
+                            <h2>Create a Game</h2>
+                            <ul>
+                                <li>
+                                    To create a game, Press the <strong>Create New Room</strong> button and we will generate a room code you can share with your opponent.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="cell large-6 medium-6 card-info primary" >
+                        <div class="card-info-content" >
+                            <h2>Join a Game</h2>
+                            <ul>
+                                <li>
+                                    To Join a game, insert the room code you were given from your opponent in the input box and press the <strong>Enter Room</strong> button
+                                    
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 
                 </div>
             </div>
@@ -57,9 +89,7 @@
         var roomName = document.querySelector('#room-name-input').value;
         window.location.pathname = '/chat/room/' + roomName + '/';
     };
-    // document.querySelector('#create-new-paragraph').onclick = function(e) {
-    //     window.location.pathname = '/chat/' + "newParagraph" + '/';
-    // };
+    
     document.querySelector('#room-name-create').onclick = function(e) {
         let letters = "0123456789ABCDEF"; 
         let roomCode = ''; 
