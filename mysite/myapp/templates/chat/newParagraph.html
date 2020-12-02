@@ -6,11 +6,11 @@
   <!-- <div class="large-4 medium-4 small-12 cell"></div> -->
   <div class="large-4 medium-4 small-12 large-offset-4 medium-offset-4 cell">
     <h3 class="text-center">Paragraph</h3>
-    <form action="/chat/newParagraph/" method="post" enctype="multipart/form-data">
+    <form action="/chat/add_paragraph/" method="post">
         {% csrf_token %}
 
         {{ form }}
-        <input type="submit" class="button expanded" value="Add Paragraph" />
+        <input type="submit" class="button expanded" value="Add Paragraph" maxlength="240" required/>
     </form>
   </div>
 </div>

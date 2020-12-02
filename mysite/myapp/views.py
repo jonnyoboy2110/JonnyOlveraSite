@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.http import  JsonResponse
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
+import random
 
 
 
@@ -50,7 +51,7 @@ def chat(request):
 
 def room(request, room_name):
     para_object = models.ParagraphModel.objects.all()
-    text = para_object[0].Paragraph
+    text = para_object[random.randint(0, len(para_object) -1)].paragraph
     wordList = text.split()
     return render(request, 'chat/room/room.html', context = {
         'title': "Chat Room",

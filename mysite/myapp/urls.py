@@ -7,7 +7,7 @@ urlpatterns = [
     path('', views.index),
     path('resume/', views.resume),
     path('chat/', views.chat, name='chat'),
-    path('chat/newParagraph/', views.add_paragraph),
+    path('chat/add_paragraph/', views.add_paragraph),
     path('registration/login/', auth_views.LoginView.as_view()),
     path('registration/register/', views.register),
     path('chat/registration/register/', views.register),

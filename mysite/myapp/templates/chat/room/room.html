@@ -14,6 +14,12 @@
             height:10px;
             border:1px solid #000;
         }
+        .cpuProgressBar{
+            background-color:green;
+            width:10px;
+            height:10px;
+            border:1px solid #000;
+        }
     </style>
 {% endblock %}
 {% block title %}{{title}}{% endblock %}
@@ -46,7 +52,8 @@
                         
                     </div>
                     <div class="card-info-content grid-x grid-padding-x" >
-                        <button class="button" onclick = "StartGame()">Start</button>
+                        <button class="button" id = "startButton" onclick = "StartGame()">Start</button>
+                        <button class="button" id = "cpuButton" onclick = "addCPU()">Add Bot</button>
                         
                     </div>
                 </div>
@@ -54,11 +61,11 @@
             <div class="large-8 medium-8 cell">
                 <div class="card-info primary" >
                     <div class="card-info-content grid-x grid-padding-x" >
-                        <p>Finished players will appear here:</p><br>
-                     <ol id = "finishedList">
-                         
-                     </ol>   
-                        
+                        <p>Finished players will appear here:</p><br>   
+                    </div>
+                    <div class="card-info-content grid-x grid-padding-x" >
+                        <ol id = "finishedList">
+                        </ol>
                     </div>
                 </div>
             </div>
@@ -81,6 +88,9 @@
         var ownProgressBarWidth = 10;
         var userList = [username];
         var startTime;
+        var cpuInPlay = false;
+        var cpuProgress = 0;
+        var interval;
 
         document.getElementById('infoText').innerHTML = document.getElementById('infoText').innerHTML + " Your room code is ".bold() + roomName.bold(); 
         document.getElementById("chat-message-input").disabled = true;
@@ -92,6 +102,7 @@
             + '/'
         );
 
+        //Actions that happen when data is broadcasted in channel
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
             if(data.action === "wordEntered"){
@@ -124,7 +135,7 @@
                     div.className = "ownProgressBar";
                     div.id = data.player + "Bar";
                     document.getElementById("progressContainer").appendChild(div);
-                    console.log(data.player);
+                    //console.log(data.player);
                 }
                 else{
                     let div = document.createElement("div");
@@ -156,6 +167,8 @@
             }
             else if(data.action === "gameStarting"){
             document.getElementById("chat-message-input").disabled = false;
+            document.getElementById("startButton").disabled = true;
+            document.getElementById("cpuButton").disabled = true;
             document.querySelector('#chat-message-input').focus();
             
             startTime = new Date();
@@ -163,6 +176,16 @@
             document.querySelector('#chat-log').innerHTML = wordList[wordIndex].bold().fontcolor("red") + 
             paragraph.substring(wordList[wordIndex].length);
             totalLength += wordList[wordIndex].length + 1;
+            if(cpuInPlay){
+                setCPUInterval();
+            }
+
+            }
+            else if(data.action === "addCPU"){
+                let div = document.createElement("div");
+                    div.className = "cpuProgressBar";
+                    div.id = data.player + "Bar";
+                    document.getElementById("progressContainer").appendChild(div);
             }
         };
 
@@ -186,7 +209,9 @@
                         document.getElementById("chat-message-input").disabled = true;
                         let nowTime  = new Date()
                         let timeElapsed = (nowTime.getTime() - startTime.getTime()) / 1000;
-                        let wpm =  precise((wordIndex * 60)/timeElapsed);
+                        let wpm =  precise((wordList.length * 60)/timeElapsed);
+                        document.getElementById("wpm").innerHTML = "You finished! Look below to see how you did!";
+                        document.getElementById("chat-log").innerHTML = paragraph.bold();
                     chatSocket.send(JSON.stringify({
                         'message': String(wpm),
                         'player': username,
@@ -216,6 +241,17 @@
                     }));
         }
         
+        function addCPU(){
+            chatSocket.send(JSON.stringify({
+                        'message': "addingCPU",
+                        'player': username+"cpu",
+                        'action': "addCPU" 
+                    }));
+            cpuInPlay = true;
+            document.getElementById("cpuButton").disabled = true;
+                    
+        }
+
         function precise(x) {
             return Number.parseFloat(x).toPrecision(4);
         }
@@ -226,7 +262,36 @@
                         'player': username,
                         'action': "playerEntered" 
                     }));
+        }
 
+        function setCPUInterval(){
+            interval = setInterval(runCPU, 3000);
+        }
+        function runCPU(){
+            if(wordList.length == cpuProgress +1){
+                        //document.getElementById("chat-message-input").disabled = true;
+                        let nowTime  = new Date()
+                        let timeElapsed = (nowTime.getTime() - startTime.getTime()) / 1000;
+                        let wpm =  precise((wordList.length * 60)/timeElapsed);
+
+                        chatSocket.send(JSON.stringify({
+                        'message': String(wpm),
+                        'player': username + "cpu",
+                        'action': "playerFinished" 
+                        }));    
+                        clearInterval(interval);
+                    }
+                    else{
+                        chatSocket.send(JSON.stringify({
+                        'message': wordList[cpuProgress],
+                        'player': username + "cpu",
+                        'action': "wordEntered" 
+                        }));
+                    }
+ 
+            cpuProgress +=1;
+            
+            
         }
         
     </script>

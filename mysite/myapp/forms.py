@@ -33,7 +33,7 @@ class GameRoomForm(forms.Form):
 
     def save(self, request):
         game_room_instance = models.gameRoomModel()
-        game_room_instance.GameRoomName = self.cleaned_data["GameRoomName"]
+        game_room_instance.GameRoom = self.cleaned_data["GameRoomName"]
         game_room_instance.author = request.user
         game_room_instance.save()
         return game_room_instance
