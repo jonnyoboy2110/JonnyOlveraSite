@@ -47,7 +47,7 @@
             </div>
             <div class="large-4 medium-4 cell">
                 <div class="card-info primary">
-                    <div class="card-info-content">
+                    <div class="card-info-content" id = "buttonContainer">
                         <p>Please select your Paragraph</p>
                         {% if user.is_authenticated %}
                         
@@ -95,7 +95,7 @@
 {% block scripts %}
     <script>
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
-        var wordList = ["no", "way"];
+        var wordList;
         var paragraph;
         var allParagraphs = JSON.parse(document.getElementById('allParagraphs').textContent);
         var username = JSON.parse(document.getElementById('player').textContent);
@@ -193,6 +193,7 @@
                 document.getElementById("finishedList").appendChild(liElement);
             }
             else if(data.action === "gameStarting"){
+            document.getElementById("buttonContainer").style.pointerEvents = "none";
             document.getElementById("chat-message-input").disabled = false;
             document.getElementById("startButton").disabled = true;
             document.getElementById("cpuButton").disabled = true;
@@ -201,6 +202,7 @@
             startTime = new Date();
             document.querySelector('#wpm').innerHTML = 0 + "wpm";
             document.querySelector('#chat-log').innerHTML = wordList[wordIndex].bold().fontcolor("red") + 
+            " " +
             wordList.slice(wordIndex+1).join(" ");
             totalLength += wordList[wordIndex].length + 1;
             if(cpuInPlay){
@@ -217,14 +219,18 @@
             else if(data.action === "newParagraph"){
                 document.getElementById("wpm").innerHTML = "This is the paragraph you will be typing";
                 document.getElementById("chat-log").innerHTML = data.message.join(" ");
+                wordList = data.message;
                 document.getElementById("startButton").disabled = false;
             document.getElementById("cpuButton").disabled = false;
+            paragraphChosen = true;
             }
             else if(data.action === "sendBackParagraph" && username == data.player){
                 document.getElementById("wpm").innerHTML = "This is the paragraph you will be typing";
                 document.getElementById("chat-log").innerHTML = data.message.join(" ");
+                wordList = data.message;
                 document.getElementById("startButton").disabled = false;
             document.getElementById("cpuButton").disabled = false;
+            paragraphChosen = true;
             }
             
         };
