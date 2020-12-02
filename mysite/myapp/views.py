@@ -46,18 +46,31 @@ def resume(request):
 
 def chat(request):
     return render(request, 'chat/index.html', context = {
-        'title': "Chat Home Page"
+        'title': "Chat Home Page",
     })
 
 def room(request, room_name):
-    para_object = models.ParagraphModel.objects.all()
-    text = para_object[random.randint(0, len(para_object) -1)].paragraph
+    para_models = models.ParagraphModel.objects.all()
+    #text = para_object[random.randint(0, len(para_object) -1)].paragraph
+    text = para_models[len(para_models)-1].paragraph
     wordList = text.split()
+    
+    if len(para_models) > 10:
+        para_models = para_models[:9]
+    para_objects = []
+    for count,para in enumerate(para_models,0):
+        temp_obj = {}
+        temp_obj['paragraph'] = para.paragraph
+        temp_obj['title'] = para.title
+        temp_obj['order'] = count
+        para_objects += [temp_obj]
+
     return render(request, 'chat/room/room.html', context = {
         'title': "Chat Room",
         'room_name': room_name,
         'paragraph':text,
-        'wordList': wordList
+        'wordList': wordList,
+        'paragraphs': para_objects
     })
 def newParagraph(request):
     return render(request, 'chat/newParagraph.html', context = {

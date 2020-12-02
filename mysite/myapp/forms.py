@@ -11,15 +11,22 @@ def must_be_unique(value):
     return value
 
 class ParagraphForm(forms.Form):
+    title = forms.CharField(
+        label='Title',
+        required=True,
+        max_length=30,
+    )
     paragraph = forms.CharField(
         label='Paragraph',
         required=True,
         max_length=240,
     )
 
+
     def save(self, request):
         paragraph_instance = models.ParagraphModel()
         paragraph_instance.paragraph = self.cleaned_data["paragraph"]
+        paragraph_instance.title = self.cleaned_data["title"]
         paragraph_instance.author = request.user
         paragraph_instance.save()
         return paragraph_instance
