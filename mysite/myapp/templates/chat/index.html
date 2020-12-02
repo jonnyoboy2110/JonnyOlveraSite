@@ -25,6 +25,15 @@
                     {% endif %}
                 </div>
             </div>
+            <div class="card-info primary">
+                <div class="card-info-content">
+                    <p>LeaderBoards:</p> <br>
+                    {% for stat in stat_objects %}
+                        <li>{{ stat.player }} on {{ stat.title }} ({{ stat.wpm}}wpm)</li>
+                    
+                    {% endfor %}
+                </div>
+            </div>
         </div>
         <div class="large-8 medium-8 cell">
             <div class="card-info primary" >

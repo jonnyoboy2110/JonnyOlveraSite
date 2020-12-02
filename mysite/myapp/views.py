@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 from django.shortcuts import render, redirect
 from django.http import  JsonResponse
+from django.http import  HttpResponse
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 import random
@@ -13,6 +14,17 @@ from . import forms
 def logout_view(request):
     logout(request)
     return redirect("/registration/login/")
+
+def add_stat(request):
+    if request.method == "POST":
+        
+        form = forms.StatForm(request.POST)
+        if form.is_valid():
+            form.save(request)
+        else:
+            return redirect("/")
+    
+    return HttpResponse()
 
 def add_paragraph(request):
     if not request.user.is_authenticated:
@@ -45,8 +57,21 @@ def resume(request):
     return render(request, "resume.html", context=context)
 
 def chat(request):
+    stat_models = models.StatModel.objects.all().order_by('-wpm')
+    
+    if len(stat_models) > 10:
+        stat_models = stat_models[:9]
+    stat_objects = []
+    for rank,stat in enumerate(stat_models,1):
+        temp_obj = {}
+        temp_obj['player'] = stat.author.username
+        temp_obj['title'] = stat.paragraphTitle
+        temp_obj['wpm'] = stat.wpm
+        temp_obj['rank'] = rank
+        stat_objects += [temp_obj]
     return render(request, 'chat/index.html', context = {
         'title': "Chat Home Page",
+        'stat_objects': stat_objects,
     })
 
 def room(request, room_name):
@@ -76,7 +101,7 @@ def newParagraph(request):
     return render(request, 'chat/newParagraph.html', context = {
         'title': "New Paragraph"
     })
-    
+
 def register(request):
     if request.method == "POST":
         form_instance = forms.RegistrationForm(request.POST)

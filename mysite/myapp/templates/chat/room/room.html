@@ -1,5 +1,6 @@
 <!-- chat/templates/chat/room.html -->
 {% extends "base.html" %}
+{% load static %}
 {% block css %}
     <style>
         .oppProgressBar{
@@ -52,7 +53,7 @@
                         {% if user.is_authenticated %}
                         
                             {% for para in paragraphs %}
-                                <input type="radio"  class = "radio" name="paragraphButtons" value="{{ para.title }}" onclick="changeParagraph({{ para.order }})" >
+                                <input type="radio"  class = "radio" name="paragraphButtons" value="{{ para.title }}" onclick="changeParagraph( {{ para.order }} )" >
                                 <label for="{{ para.title }}">{{ para.title }}</label><br>
                             {% endfor %}
                         
@@ -87,16 +88,19 @@
             </div>
         </div>
     </div>
+    {% csrf_token %}
     {{ room_name|json_script:"room-name" }}
     
     {{ paragraphs|json_script:"allParagraphs" }}
     {{user.username|json_script:"player" }}
 {% endblock %}
 {% block scripts %}
+<script src="{% static "js/jQuery.js" %}"></script>
+
     <script>
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
         var wordList;
-        var paragraph;
+        var title;
         var allParagraphs = JSON.parse(document.getElementById('allParagraphs').textContent);
         var username = JSON.parse(document.getElementById('player').textContent);
         var paragraphChosen = false;
@@ -175,6 +179,11 @@
                         'player': data.player,
                         'action': "sendBackParagraph",
                     }));
+                    chatSocket.send(JSON.stringify({
+                        'message': title, 
+                        'player': data.player,
+                        'action': "sendBackTitle",
+                    }));
                     }
                 }
             }
@@ -221,8 +230,11 @@
                 document.getElementById("chat-log").innerHTML = data.message.join(" ");
                 wordList = data.message;
                 document.getElementById("startButton").disabled = false;
-            document.getElementById("cpuButton").disabled = false;
-            paragraphChosen = true;
+                document.getElementById("cpuButton").disabled = false;
+                paragraphChosen = true;
+            }
+            else if(data.action === "newTitle"){
+                title = data.message;
             }
             else if(data.action === "sendBackParagraph" && username == data.player){
                 document.getElementById("wpm").innerHTML = "This is the paragraph you will be typing";
@@ -231,6 +243,9 @@
                 document.getElementById("startButton").disabled = false;
             document.getElementById("cpuButton").disabled = false;
             paragraphChosen = true;
+            }
+            else if(data.action === "sendBackTitle" && username == data.player){
+                title = data.message;
             }
             
         };
@@ -258,6 +273,21 @@
                         let wpm =  precise((wordList.length * 60)/timeElapsed);
                         document.getElementById("wpm").innerHTML = "You finished! Look below to see how you did!";
                         document.getElementById("chat-log").innerHTML = wordList.join(" ").bold();
+                        //Submitting form without reloading page with ajax
+                        e.preventDefault();
+                        $.ajax({
+                            type:'POST',
+                            url:'/chat/add_stat/',
+                            data:{
+                                paragraphTitle: title, 
+                                wpm:wpm,
+                                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+
+                            },
+                            success:function(){
+                                alert("Stat have been uploaded");
+                            }
+                        })
                     chatSocket.send(JSON.stringify({
                         'message': String(wpm),
                         'player': username,
@@ -342,15 +372,20 @@
 
         function changeParagraph(name){
             wordList = allParagraphs[Number(name)]['paragraph'].split(" ");
-            
+            title = allParagraphs[Number(name)]['title']
             chatSocket.send(JSON.stringify({
                         'message': wordList,
                         'player': username,
                         'action': "newParagraph" 
                         }));
-            
+            chatSocket.send(JSON.stringify({
+                        'message': title,
+                        'player': username,
+                        'action': "newTitle" 
+                        }));
            
         }
         
     </script>
+
 {% endblock %}

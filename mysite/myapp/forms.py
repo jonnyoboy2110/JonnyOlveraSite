@@ -45,6 +45,24 @@ class GameRoomForm(forms.Form):
         game_room_instance.save()
         return game_room_instance
 
+class StatForm(forms.Form):
+    paragraphTitle = forms.CharField(
+        label='Title',
+        required=True,
+        max_length=30,
+    )
+    wpm = forms.DecimalField(
+        label='WPM',
+        required=True,
+        decimal_places=2,
+    )
+    def save(self, request):
+        stat_instance = models.StatModel()
+        stat_instance.paragraphTitle = self.cleaned_data["paragraphTitle"]
+        stat_instance.wpm = self.cleaned_data["wpm"]
+        stat_instance.author = request.user = request.user
+        stat_instance.save()
+
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(
         label="Email",
