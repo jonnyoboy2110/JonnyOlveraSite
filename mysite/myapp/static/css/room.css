@@ -1,0 +1,18 @@
+.oppProgressBar{
+    background-color:red;
+    width:10px;
+    height:10px;
+    border:1px solid #000;
+}
+.ownProgressBar{
+    background-color:blueviolet;
+    width:10px;
+    height:10px;
+    border:1px solid #000;
+}
+.cpuProgressBar{
+    background-color:green;
+    width:10px;
+    height:10px;
+    border:1px solid #000;
+}

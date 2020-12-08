@@ -60,7 +60,7 @@ class StatForm(forms.Form):
         stat_instance = models.StatModel()
         stat_instance.paragraphTitle = self.cleaned_data["paragraphTitle"]
         stat_instance.wpm = self.cleaned_data["wpm"]
-        stat_instance.author = request.user = request.user
+        stat_instance.author = request.user
         stat_instance.save()
 
 class RegistrationForm(UserCreationForm):

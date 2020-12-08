@@ -28,10 +28,12 @@
             <div class="card-info primary">
                 <div class="card-info-content">
                     <p>LeaderBoards:</p> <br>
+                    <ol>
                     {% for stat in stat_objects %}
                         <li>{{ stat.player }} on {{ stat.title }} ({{ stat.wpm}}wpm)</li>
                     
                     {% endfor %}
+                </ol>
                 </div>
             </div>
         </div>
